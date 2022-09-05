@@ -1,13 +1,42 @@
 :root {
+	--pewter: #e9eaec;
+	--cerulean: #2a52be;
+	--vermillion: #e34234;
+	--lavender: #e6e6fa;
+	--celadon: #ace1af;
+	--saffron: #f4c430;
+
 	--primary-black: #212424;
 	--secondary-black: #3d3e3e;
-	--text-color: #e1e1e1;
-	--primary-border-color: #cecdcc;
+	--text-color: var(--secondary-black);
+	--primary-border-color: var(--pewter);
+
+	--primary-gray: var(--pewter);
+	--primary-blue: var(--cerulean);
+	--primary-red: var(--vermillion);
+	--primary-green: var(--celadon);
+	--primary-yellow: var(--yellow);
+	--primary-purple: var(--lavender);
+}
+
+@font-face {
+	font-family: "New Spirit";
+	src: url("/fonts/NewSpirit-Regular.woff2") format("woff2");
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: "New Spirit";
+	src: url("/fonts/NewSpirit-Bold.woff2") format("woff2");
+	font-weight: 700;
 }
 
 body {
-	background-color: var(--primary-black);
-	color: var(--text-color);
+	/* background-color: var(--primary-black);
+	color: var(--text-color); */
+
+	color: var(--secondary-black);
+	font-family: "New Spirit";
 }
 
 input[type="checkbox"],

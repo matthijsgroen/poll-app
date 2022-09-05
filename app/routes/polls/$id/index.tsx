@@ -14,13 +14,14 @@ import { getUserByID, getUsers, updateUserById } from "~/utils/user";
 import { DeepPartial } from "~/utils/types";
 import styles from "~/styles/poll.css";
 import classNames from "classnames";
+import { Card, links as cardLinks } from "~/components/Card";
 
 type ScreenState = "poll" | "results";
 
 export type UpdateScore = Omit<DeepPartial<FirebaseUserFields>, "role">;
 
 export function links() {
-	return [{ rel: "stylesheet", href: styles }];
+	return [...cardLinks(), { rel: "stylesheet", href: styles }];
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -174,29 +175,86 @@ export default function PollDetail() {
 			<Link to="/polls">Back to list of polls</Link>
 			<h1>Poll #{poll.pollNumber}</h1>
 			<PollStatus status={poll.status} />
-			<h3> {transformToCodeTags(poll.question)}</h3>
+			<Card
+				title={transformToCodeTags(poll.question)}
+				category={poll.category}
+			>
+				{screenState === "poll" && (
+					<Form method="post">
+						{action?.error && (
+							<span>
+								Please at least fill out one answer to submit
+							</span>
+						)}
+						<ul className="choices-list">
+							{currentAnswers.map((answer, idx: number) => (
+								<li key={idx} className="option-answer">
+									<input
+										disabled={poll.status !== "open"}
+										type={poll.type}
+										id={answer.id}
+										onChange={isChecked}
+										// checked={isDefaultChecked(answer)}
+										name="answer"
+										value={answer.value}
+									/>
 
-			{screenState === "poll" && (
-				<Form method="post">
-					{action?.error && (
-						<span>
-							Please at least fill out one answer to submit
-						</span>
-					)}
-					<ul className="choices-list">
-						{currentAnswers.map((answer, idx: number) => (
-							<li key={idx} className="option-answer">
-								<input
-									disabled={poll.status !== "open"}
-									type={poll.type}
-									id={answer.id}
-									onChange={isChecked}
-									// checked={isDefaultChecked(answer)}
-									name="answer"
-									value={answer.value}
-								/>
+									<label htmlFor={answer.id}>
+										{answer.blockType === "code" ? (
+											<pre>{answer.value}</pre>
+										) : (
+											<span className="text-question-answer">
+												{transformToCodeTags(
+													answer.value,
+													idx
+												)}
+											</span>
+										)}
+									</label>
+								</li>
+							))}
+						</ul>
 
-								<label htmlFor={answer.id}>
+						{user && (
+							<button
+								disabled={
+									poll.status !== "open" ||
+									currentVoted.length === 0
+								}
+							>
+								Submit
+							</button>
+						)}
+						{!user && (
+							<small>Please login to submit your answer.</small>
+						)}
+						<input
+							type="hidden"
+							name="answers"
+							defaultValue={JSON.stringify(currentAnswers)}
+						/>
+						<input
+							type="hidden"
+							name="voted"
+							defaultValue={JSON.stringify(currentVoted)}
+						/>
+						<input
+							type="hidden"
+							name="uid"
+							defaultValue={user?.uid}
+						/>
+					</Form>
+				)}
+				{screenState === "results" && (
+					<>
+						<ul className="choices-list results">
+							{currentAnswers.map((answer, idx) => (
+								<li
+									key={answer.id}
+									className={classNames("option-answer", {
+										correct: getCorrectAnswers(answer.id),
+									})}
+								>
 									{answer.blockType === "code" ? (
 										<pre>{answer.value}</pre>
 									) : (
@@ -207,104 +265,62 @@ export default function PollDetail() {
 											)}
 										</span>
 									)}
-								</label>
-							</li>
-						))}
-					</ul>
-
-					{user && (
-						<button
-							disabled={
-								poll.status !== "open" ||
-								currentVoted.length === 0
-							}
-						>
-							Submit
-						</button>
-					)}
-					{!user && (
-						<small>Please login to submit your answer.</small>
-					)}
-					<input
-						type="hidden"
-						name="answers"
-						defaultValue={JSON.stringify(currentAnswers)}
-					/>
-					<input
-						type="hidden"
-						name="voted"
-						defaultValue={JSON.stringify(currentVoted)}
-					/>
-					<input type="hidden" name="uid" defaultValue={user?.uid} />
-				</Form>
-			)}
-			{screenState === "results" && (
-				<>
-					<ul className="choices-list results">
-						{currentAnswers.map((answer, idx) => (
-							<li
-								key={answer.id}
-								className={classNames("option-answer", {
-									correct: getCorrectAnswers(answer.id),
-								})}
-							>
-								{answer.blockType === "code" ? (
-									<pre>{answer.value}</pre>
-								) : (
-									<span className="text-question-answer">
-										{transformToCodeTags(answer.value, idx)}
+									<span>
+										{
+											getLengthOfAnswersById(answer.id)
+												.length
+										}{" "}
+										votes
 									</span>
-								)}
-								<span>
-									{getLengthOfAnswersById(answer.id).length}{" "}
-									votes
-								</span>
 
-								{isAdmin && (
-									<>
-										voted by:{" "}
-										{getVotesFromAllUsers(answer.id).map(
-											(user) => (
+									{isAdmin && (
+										<>
+											voted by:{" "}
+											{getVotesFromAllUsers(
+												answer.id
+											).map((user) => (
 												<strong key={user.id}>
 													{user.email}{" "}
 												</strong>
-											)
-										)}
-									</>
-								)}
-							</li>
-						))}
-					</ul>
-					<span>{responses} users voted</span>
+											))}
+										</>
+									)}
+								</li>
+							))}
+						</ul>
+						<span>{responses} users voted</span>
 
-					<ul className="choices-list results">
-						<h1>You voted for:</h1>
+						<ul className="choices-list results">
+							<h1>You voted for:</h1>
 
-						{getGivenVotesByUser.map((vote, idx) => (
-							<li
-								key={vote?.id}
-								className={classNames("option-answer", {
-									correct: getCorrectAnswers(vote?.id || ""),
-									incorrect: !getCorrectAnswers(
-										vote?.id || ""
-									),
-								})}
-							>
-								{vote?.blockType === "code" ? (
-									<pre>{vote?.value}</pre>
-								) : (
-									<span className="text-question-answer">
-										{transformToCodeTags(
-											vote?.value || "",
-											idx
-										)}
-									</span>
-								)}
-							</li>
-						))}
-					</ul>
-				</>
-			)}
+							{getGivenVotesByUser.map((vote, idx) => (
+								<li
+									key={vote?.id}
+									className={classNames("option-answer", {
+										correct: getCorrectAnswers(
+											vote?.id || ""
+										),
+										incorrect: !getCorrectAnswers(
+											vote?.id || ""
+										),
+									})}
+								>
+									{vote?.blockType === "code" ? (
+										<pre>{vote?.value}</pre>
+									) : (
+										<span className="text-question-answer">
+											{transformToCodeTags(
+												vote?.value || "",
+												idx
+											)}
+										</span>
+									)}
+								</li>
+							))}
+						</ul>
+					</>
+				)}
+			</Card>
 		</section>
 	);
 }

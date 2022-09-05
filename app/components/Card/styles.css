@@ -1,0 +1,37 @@
+.card {
+	padding: 2rem;
+	border-radius: 2rem;
+	max-width: 800px;
+	color: var(--text-color);
+}
+
+.title {
+	font-size: 2.25rem;
+	margin: 0;
+}
+
+.html {
+	background-color: var(--primary-red);
+}
+
+.css {
+	background-color: var(--primary-blue);
+	--text-color: white;
+}
+
+.javascript {
+	background-color: var(--primary-yellow);
+}
+
+.typescript {
+	background-color: var(--primary-blue);
+	--text-color: white;
+}
+
+.react {
+	background-color: var(--primary-green);
+}
+
+.general-frontend {
+	background-color: var(--primary-purple);
+}
