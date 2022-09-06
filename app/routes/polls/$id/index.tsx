@@ -186,6 +186,8 @@ export default function PollDetail() {
 								Please at least fill out one answer to submit
 							</span>
 						)}
+						{poll.codeBlock && <pre>{poll.codeBlock}</pre>}
+
 						<ul className="choices-list">
 							{currentAnswers.map((answer, idx: number) => (
 								<li key={idx} className="option-answer">
@@ -244,81 +246,6 @@ export default function PollDetail() {
 							defaultValue={user?.uid}
 						/>
 					</Form>
-				)}
-				{screenState === "results" && (
-					<>
-						<ul className="choices-list results">
-							{currentAnswers.map((answer, idx) => (
-								<li
-									key={answer.id}
-									className={classNames("option-answer", {
-										correct: getCorrectAnswers(answer.id),
-									})}
-								>
-									{answer.blockType === "code" ? (
-										<pre>{answer.value}</pre>
-									) : (
-										<span className="text-question-answer">
-											{transformToCodeTags(
-												answer.value,
-												idx
-											)}
-										</span>
-									)}
-									<span>
-										{
-											getLengthOfAnswersById(answer.id)
-												.length
-										}{" "}
-										votes
-									</span>
-
-									{isAdmin && (
-										<>
-											voted by:{" "}
-											{getVotesFromAllUsers(
-												answer.id
-											).map((user) => (
-												<strong key={user.id}>
-													{user.email}{" "}
-												</strong>
-											))}
-										</>
-									)}
-								</li>
-							))}
-						</ul>
-						<span>{responses} users voted</span>
-
-						<ul className="choices-list results">
-							<h1>You voted for:</h1>
-
-							{getGivenVotesByUser.map((vote, idx) => (
-								<li
-									key={vote?.id}
-									className={classNames("option-answer", {
-										correct: getCorrectAnswers(
-											vote?.id || ""
-										),
-										incorrect: !getCorrectAnswers(
-											vote?.id || ""
-										),
-									})}
-								>
-									{vote?.blockType === "code" ? (
-										<pre>{vote?.value}</pre>
-									) : (
-										<span className="text-question-answer">
-											{transformToCodeTags(
-												vote?.value || "",
-												idx
-											)}
-										</span>
-									)}
-								</li>
-							))}
-						</ul>
-					</>
 				)}
 			</Card>
 		</section>
