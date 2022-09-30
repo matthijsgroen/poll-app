@@ -1,32 +1,31 @@
 .block {
 	border-radius: 0.2rem;
-	width: 15px;
-	height: 15px;
+	width: 30px;
+	height: 30px;
 	cursor: pointer;
-	opacity: 0.5;
+	background: var(--theme-color);
 }
 
 .level-1 {
-	background: #ffe38b;
-	border: 1px solid #c1ac67;
+	opacity: 0.3;
+	border: 3px solid var(--theme-color);
 }
 
 .level-2 {
-	background-color: #f4c430;
-	border: 1px solid #cc9900;
+	opacity: 0.55;
+	border: 3px solid var(--theme-color-transparent-20);
 }
 
 .level-3 {
-	background: #6f5300;
-	border: 1px solid #8e6b03;
+	opacity: 0.85;
+	border: 3px solid var(--theme-color-transparent-20);
 }
 
 .level-4 {
-	background-color: #403000;
-	border: 1px solid #6c550c;
+	border: 3px solid var(--theme-color-transparent-20);
 }
 
 .locked {
 	background: transparent;
-	border: 1px dashed white;
+	border: 2px dashed var(--theme-color);
 }

@@ -1,20 +1,37 @@
-.option-answer {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	/* background: var(--secondary-black); */
-}
-
 button {
 	width: 400px;
 	height: 3rem;
 	font-size: 1.25rem;
 }
 
+.form-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-top: 3rem;
+}
+
+.poll-type-text {
+	font-size: 2rem;
+	background-color: var(--theme-color-transparent-20);
+	padding: 1rem;
+}
+
+.icon {
+	margin-right: 1.5rem;
+}
+
+.content-container {
+	display: grid;
+	grid-template-columns: 3fr 1fr;
+	gap: 2rem;
+}
+
 .choices-list {
 	gap: 1rem;
 	display: flex;
-	flex-direction: column;
+	flex-wrap: wrap;
+	padding: 0;
 }
 
 .correct > *:first-child {
@@ -31,7 +48,28 @@ button {
 	align-items: center;
 }
 
+.option-answer {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	-webkit-appearance: none;
+	/* background: var(--secondary-black); */
+}
+
 .text-question-answer {
-	background: #313131;
 	padding: 1rem;
+	border: 1px solid var(--theme-color);
+	cursor: pointer;
+	transition: 300ms background-color;
+	user-select: none;
+}
+
+.text-question-answer:hover {
+	background-color: var(--theme-color-transparent-20);
+}
+
+input[type="checkbox"]:checked ~ label > .text-question-answer,
+input[type="radio"]:checked ~ label > .text-question-answer {
+	background-color: var(--saffron);
+	color: var(--primary-black);
 }

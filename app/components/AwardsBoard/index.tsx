@@ -272,7 +272,9 @@ export const AwardsBoard: FC<Props> = ({ users, polls }) => {
 
 	return (
 		<aside className="awards-container">
-			<span>Awards board</span>
+			<h3 className="small-text">
+				Click on a block to view award details
+			</h3>
 			<section className="blocks-container unlock-container">
 				{awards(users, polls).map((award) => {
 					const percentage = calculateColorTintsByTotalUsers(
@@ -302,29 +304,42 @@ export const AwardsBoard: FC<Props> = ({ users, polls }) => {
 					<span className="small-text">Unlocked by more voters</span>
 				</div>
 			</section>
-			<section>
-				{awardInfo && (
-					<>
-						<h3>{awardInfo.name}</h3>
-						<span>{awardInfo.description}</span>
-						<ul>
-							<span>Unlocked by:</span>
-							{awardInfo
-								.requirements(users, polls)
-								.map((user: any) => {
-									return (
-										<li key={user.email}>
+
+			{awardInfo && (
+				<section className="award-info-container">
+					<h3 className="award-title">{awardInfo.name}</h3>
+					<span className="award-description">
+						{awardInfo.description}
+					</span>
+					<ul className="award-user-list">
+						<p className="unlocked-by">Unlocked by:</p>
+						{awardInfo
+							.requirements(users, polls)
+							.map((user: any) => {
+								return (
+									<li
+										key={user.email}
+										className="award-list-item"
+									>
+										<img
+											referrerPolicy="no-referrer"
+											src={user.photoURL || ""}
+											width={50}
+											height={50}
+											className="profile-img"
+										/>
+										<span className="username">
 											{user?.displayName}
-										</li>
-									);
-								})}
-							{/* {awardInfo.requirements.map((user: any) => (
+										</span>
+									</li>
+								);
+							})}
+						{/* {awardInfo.requirements.map((user: any) => (
 									<li key={user.id}>{user.displayName}</li>
 								))} */}
-						</ul>
-					</>
-				)}
-			</section>
+					</ul>
+				</section>
+			)}
 		</aside>
 	);
 };

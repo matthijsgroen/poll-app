@@ -1,0 +1,29 @@
+.poll-meta-info {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	font-variation-settings: "wght" 500;
+	font-size: 1.125rem;
+	margin-top: 1rem;
+	line-height: 1;
+}
+
+.edition-container > div {
+	display: flex;
+	flex-direction: column;
+}
+
+.edition {
+	font-variation-settings: "wght" 800;
+	font-size: 4rem;
+}
+
+.edition-text,
+.no {
+	font-size: 1rem;
+	font-variation-settings: "wght" 500;
+}
+
+.poll-meta-info > p {
+	margin: 0;
+}

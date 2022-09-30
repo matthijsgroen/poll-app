@@ -1,19 +1,79 @@
+@font-face {
+	font-family: "ABCWhyteVariable";
+	src: url("/fonts/ABCWhyteVariable-Trial.woff2") format("woff2");
+}
+
 :root {
-	--primary-black: #212424;
-	--secondary-black: #3d3e3e;
+	--primary-black: #2e2e2e;
+	--secondary-black: #1e1e1e;
 	--text-color: #e1e1e1;
 	--primary-border-color: #cecdcc;
+
+	--pewter: 220, 7%, 92%;
+	--cerulean: 224, 64%, 45%;
+	--vermillion: 5, 76%, 55%;
+	--lavender: 240, 67%, 94%;
+	--celadon: 123, 47%, 78%;
+	--saffron: 45, 90%, 57%;
+	--viridian: 161, 34%, 38%;
+
+	--font-stack: "ABCWhyteVariable";
+
+	--theme-color: hsla(var(--saffron), 1);
+	--theme-color-transparent-20: hsla(var(--saffron), 0.2);
 }
 
 body {
 	background-color: var(--primary-black);
-	color: var(--text-color);
+	color: var(--theme-color);
+	font-family: var(--font-stack);
+	font-variation-settings: "wght" 600;
+	max-width: 1320px;
+	margin: 0 auto;
+}
+
+.html {
+	--theme-color: hsla(var(--vermillion), 1);
+	--theme-color-transparent-20: hsla(var(--vermillion), 0.2);
+}
+
+.css {
+	--theme-color: hsla(var(--cerulean), 1);
+	--theme-color-transparent-20: hsla(var(--cerulean), 0.2);
+}
+
+.javascript {
+	/* background-color: #201a04;
+	--secondary-black: #372f01; */
+	--theme-color: hsla(var(--saffron), 1);
+	--theme-color-transparent-20: hsla(var(--saffron), 0.2);
+}
+
+.react {
+	--theme-color: hsla(var(--celadon), 1);
+	--theme-color-transparent-20: hsla(var(--celadon), 0.2);
+}
+
+.typescript {
+	background-color: #06100f;
+	--secondary-black: #14321d;
+	--theme-color: hsla(var(--viridian), 1);
+	--theme-color-transparent-20: hsla(var(--viridian), 0.2);
+}
+
+.general-frontend {
+	--theme-color: hsla(var(--lavender), 1);
+	--theme-color-transparent-20: hsla(var(--lavender), 0.2);
 }
 
 input[type="checkbox"],
 input[type="radio"] {
-	width: 1.25rem;
-	height: 1.25rem;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	-o-appearance: none;
+	appearance: none;
+	display: none;
 }
 
 pre {
@@ -33,4 +93,9 @@ code {
 
 button {
 	height: 2rem;
+}
+
+.profile-img {
+	border-radius: 1rem;
+	border: 2px solid var(--theme-color);
 }
