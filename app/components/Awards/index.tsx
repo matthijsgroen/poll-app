@@ -188,6 +188,8 @@ const awards = (users: any, polls: PollData[]) => [
 				.map((poll) => poll.voted.map((vote) => vote.userId)[0])
 				.filter((a) => a);
 
+			// return getTopUsers(userIds, users, 2);
+
 			const [id] = Object.entries(getHighestOccurenceByIds(userIds))
 				.filter(([key, value]) => value >= NUMBER_OF_POLLS_NEEDED)
 				.flat();
@@ -242,21 +244,14 @@ const getUserWithMostCorrectPollsByCategory = (
 		.filter((u) => u)
 		.map((u) => u.id)
 		.filter((u) => u);
-
-	const id = userIds.reduce((previous, current, i, arr) => {
-		return arr.filter((item) => item === previous).length >
-			arr.filter((item) => item === current).length
-			? previous
-			: current;
-	}, "");
-
-	return users.filter((user: any) => user.id === id);
+	return getTopUsers(userIds, users, 2);
 };
 
 const getUserWithMostPollsAnsweredByCategory = (
 	users: any,
 	polls: PollData[],
-	category: PollCategory
+	category: PollCategory,
+	showAmountOfUsers = 2
 ) => {
 	const allPolls = polls.filter((poll) => poll.category === category);
 
@@ -265,14 +260,31 @@ const getUserWithMostPollsAnsweredByCategory = (
 		.map((polls) => polls.voted.map((vote) => vote.userId))
 		.flat();
 
-	const id = userIds.reduce((previous, current, i, arr) => {
-		return arr.filter((item) => item === previous).length >
-			arr.filter((item) => item === current).length
-			? previous
-			: current;
-	}, "");
+	return getTopUsers(userIds, users);
+};
 
-	return users.filter((user: any) => user.id === id);
+const getTopUsers = (userIds: string[], users: any, showAmountOfUsers = 3) => {
+	const counted = userIds.reduce((previous: any, current: any) => {
+		const currCount = previous[current] ?? 0;
+
+		return {
+			...previous,
+			[current]: currCount + 1,
+		};
+	}, {});
+
+	const sorted = Object.entries(counted)
+		.sort((a, b) => {
+			return (b[1] as number) - (a[1] as number);
+		})
+		.filter((_, i) => i < showAmountOfUsers);
+
+	const topUsers = sorted.map(([key, value]) => ({
+		...users.find((user) => user.id === key),
+		score: value,
+	}));
+
+	return topUsers;
 };
 
 type Props = {
@@ -293,37 +305,56 @@ export const Awards: FC<Props> = ({ users, polls }) => {
 			{awards(users, polls)
 				.filter((award) => award.type === "award")
 				.map((award) => (
-					<Fragment key={award.name}>
-						<div
-							className={classNames({
-								locked: award.requirements(users).length === 0,
-							})}
-						>
-							<h3 className="subtitle">{award.name}</h3>
-							<small>{award.description}</small>
+					<div
+						key={award.name}
+						className={classNames({
+							locked: award.requirements(users).length === 0,
+						})}
+					>
+						<h3 className="subtitle">{award.name}</h3>
+						<small>{award.description}</small>
+
+						<ol className="award-winner-list">
 							{award
 								.requirements(users)
 								// Remove users who participated in "kabisa" poll
 								.filter((user) => user.polls.total !== 0)
-								.map((user: any) => {
+								.map((user: any, index: number) => {
 									return (
-										<small
+										<AwardWinnerDisplay
+											user={user}
+											index={index}
 											key={user.id}
-											className="owned-by"
-										>
-											Owned by{" "}
-											<span className="username colored-name">
-												{user.displayName}
-											</span>
-										</small>
+										/>
 									);
 								})}
-						</div>
-					</Fragment>
+						</ol>
+					</div>
 				))}
 		</section>
 	);
 };
+
+type AwardWinnerDisplayProps = {
+	user: any;
+	index: number;
+};
+
+const AwardWinnerDisplay: FC<AwardWinnerDisplayProps> = ({ user, index }) => (
+	<li>
+		<small key={user.id} className="owned-by">
+			{index === 0 ? (
+				<span className="winner colored-name">
+					{user.displayName} ({user.score})
+				</span>
+			) : (
+				<span className="follow-up">
+					{user.displayName} ({user.score})
+				</span>
+			)}
+		</small>
+	</li>
+);
 
 export const Ranks: FC<Props> = ({ users, polls }) => {
 	return (
