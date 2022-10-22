@@ -7,3 +7,4 @@ node_modules
 frontend-poll-15de8-afad50206847.json
 firebase-debug.log
 firestore-debug.log
+ui-debug.log

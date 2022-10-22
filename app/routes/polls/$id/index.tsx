@@ -546,6 +546,56 @@ export default function PollDetail() {
 					<h2 className="title">Upcoming Awards</h2>
 					<UpcomingAwards users={users} polls={polls} />
 				</section>
+
+				<section className="poll-leaderboard-container">
+					<h2>Total polls</h2>
+					<article className="poll-leaderboard">
+						<section className="meter-container">
+							{/* <meter
+								className="meter"
+								min="0"
+								max={polls.length}
+								value={130}
+								low={polls.length / 5}
+								high={polls.length / 1.3}
+							></meter> */}
+							{polls.length % 10 !== 0 && (
+								<span>
+									{
+										polls.filter((poll) => poll.openingTime)
+											.length
+									}
+								</span>
+							)}
+							{polls
+								.filter((poll) => poll.openingTime)
+								.map(
+									(polls, index) =>
+										index % 10 == 0 && <span>{index}</span>
+								)
+								.reverse()}
+						</section>
+						<div className="user-photo-and-total-container">
+							{users
+								.filter((user) => user.polls.total !== 0)
+								.sort((a, b) => b.polls.total - a.polls.total)
+								.map((user, i) => (
+									<section className="user-photo-and-total">
+										<img
+											className="user-photo"
+											src={
+												"https://i.pravatar.cc/45?u=" +
+												i
+											}
+										/>
+										<span>{user.polls.total}</span>
+									</section>
+								))}
+						</div>
+					</article>
+					<h2>Total polls this season</h2>
+					<h2>Total correct polls</h2>
+				</section>
 				{/* <PollStatistics polls={polls} /> */}
 			</section>
 		</section>
